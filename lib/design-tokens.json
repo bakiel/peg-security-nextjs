@@ -1,0 +1,179 @@
+{
+  "colors": {
+    "gold": {
+      "DEFAULT": "#D0B96D",
+      "light": "#E5D08A",
+      "dark": "#B59F5A"
+    },
+    "onyx": {
+      "DEFAULT": "#292B2B",
+      "light": "#3D3F3F"
+    },
+    "white": "#FFFFFF",
+    "offwhite": "#F8F9FA",
+    "grey": {
+      "medium": "#666666",
+      "light": "#999999"
+    },
+    "accent": {
+      "green": "#2E5A3F",
+      "orange": "#D2691E",
+      "blue": "#4ECDC4"
+    }
+  },
+  "gradients": {
+    "dark": "linear-gradient(135deg, #1a1a1a 0%, #292B2B 100%)",
+    "gold": "linear-gradient(135deg, #D0B96D 0%, #B59F5A 100%)"
+  },
+  "shadows": {
+    "sm": "0 2px 10px rgba(0,0,0,0.1)",
+    "md": "0 10px 30px rgba(0,0,0,0.15)",
+    "lg": "0 20px 60px rgba(0,0,0,0.2)",
+    "glow": "0 0 30px rgba(208, 185, 109, 0.4)"
+  },
+  "typography": {
+    "fontFamily": {
+      "body": ["Poppins", "sans-serif"],
+      "heading": ["Montserrat", "sans-serif"]
+    },
+    "fontSize": {
+      "sectionTag": "12px",
+      "sectionTitle": "clamp(2rem, 5vw, 3.5rem)",
+      "heroTitle": "clamp(2rem, 5vw, 3.5rem)",
+      "body": "16px"
+    },
+    "fontWeight": {
+      "light": 300,
+      "regular": 400,
+      "semibold": 600,
+      "bold": 700,
+      "extrabold": 800,
+      "black": 900
+    },
+    "letterSpacing": {
+      "tag": "3px",
+      "nav": "1px",
+      "hero": "-0.5px"
+    },
+    "lineHeight": {
+      "body": 1.6,
+      "heading": 1.2,
+      "hero": 0.95
+    }
+  },
+  "spacing": {
+    "container": {
+      "maxWidth": "1200px",
+      "padding": "0 20px"
+    },
+    "section": {
+      "padding": "80px 0",
+      "heroPaddingTop": "120px",
+      "heroPaddingBottom": "40px"
+    },
+    "gaps": {
+      "nav": "40px",
+      "serviceGrid": "30px",
+      "stats": "40px",
+      "heroButtons": "30px"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "logoSize": "45px",
+      "padding": "15px 0",
+      "paddingScrolled": "10px 0",
+      "background": "rgba(26, 26, 26, 0.95)",
+      "backgroundScrolled": "rgba(26, 26, 26, 0.98)",
+      "backdropBlur": "20px",
+      "borderBottom": "1px solid rgba(208, 185, 109, 0.1)"
+    },
+    "hero": {
+      "minHeight": "800px",
+      "overlayGradient": "linear-gradient(180deg, rgba(26, 26, 26, 0.7) 0%, rgba(26, 26, 26, 0.4) 50%, rgba(26, 26, 26, 0.9) 100%)"
+    }
+  },
+  "animations": {
+    "transition": "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    "carousel": {
+      "interval": "5000ms",
+      "transition": "1s ease-in-out"
+    },
+    "kenBurns": {
+      "duration": "8s",
+      "zoomFrom": 1,
+      "zoomTo": 1.15
+    },
+    "glow": {
+      "duration": "2s",
+      "easing": "ease-in-out",
+      "direction": "alternate"
+    },
+    "pulse": {
+      "duration": "2s",
+      "infinite": true
+    }
+  },
+  "textEffects": {
+    "goldGlow": {
+      "textShadow": [
+        "0 0 10px rgba(208, 185, 109, 0.5)",
+        "0 0 20px rgba(208, 185, 109, 0.4)",
+        "0 0 30px rgba(208, 185, 109, 0.3)",
+        "0 0 40px rgba(208, 185, 109, 0.2)"
+      ]
+    },
+    "logoGlow": {
+      "textShadow": "0 0 20px rgba(208, 185, 109, 0.4)"
+    },
+    "logoFilter": "drop-shadow(0 0 10px rgba(208, 185, 109, 0.5))"
+  },
+  "components": {
+    "button": {
+      "primary": {
+        "background": "linear-gradient(135deg, #D0B96D 0%, #B59F5A 100%)",
+        "color": "#292B2B",
+        "padding": "12px 25px",
+        "borderRadius": "30px",
+        "boxShadow": "0 5px 15px rgba(208, 185, 109, 0.3)",
+        "hover": {
+          "transform": "translateY(-2px)",
+          "boxShadow": "0 8px 25px rgba(208, 185, 109, 0.4)"
+        }
+      },
+      "secondary": {
+        "background": "transparent",
+        "color": "#FFFFFF",
+        "border": "2px solid rgba(208, 185, 109, 0.5)",
+        "hover": {
+          "background": "rgba(208, 185, 109, 0.1)",
+          "borderColor": "#D0B96D",
+          "color": "#D0B96D"
+        }
+      }
+    },
+    "card": {
+      "background": "rgba(41, 43, 43, 0.5)",
+      "border": "1px solid rgba(208, 185, 109, 0.1)",
+      "borderRadius": "15px",
+      "padding": "40px 30px",
+      "hover": {
+        "transform": "translateY(-5px)",
+        "borderColor": "rgba(208, 185, 109, 0.3)",
+        "boxShadow": "0 10px 30px rgba(0, 0, 0, 0.3)"
+      }
+    },
+    "badge": {
+      "background": "rgba(208, 185, 109, 0.1)",
+      "border": "1px solid rgba(208, 185, 109, 0.3)",
+      "borderRadius": "30px",
+      "padding": "8px 20px",
+      "color": "#D0B96D"
+    }
+  },
+  "breakpoints": {
+    "mobile": "768px",
+    "tablet": "1024px",
+    "desktop": "1440px"
+  }
+}

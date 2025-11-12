@@ -1,27 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&family=Montserrat:wght@700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gold: #D0B96D;
+  --gold-light: #E5D08A;
+  --gold-dark: #B59F5A;
+  --onyx: #292B2B;
+  --onyx-light: #3D3F3F;
+  --white: #FFFFFF;
+  --offwhite: #F8F9FA;
+  --grey-medium: #666666;
+  --grey-light: #999999;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--white);
+  background: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+@layer components {
+  .container-peg {
+    @apply w-full max-w-container mx-auto px-5;
+  }
+
+  .section-padding {
+    @apply py-section;
+  }
+
+  .text-gold-glow {
+    text-shadow:
+      0 0 10px rgba(208, 185, 109, 0.5),
+      0 0 20px rgba(208, 185, 109, 0.4),
+      0 0 30px rgba(208, 185, 109, 0.3),
+      0 0 40px rgba(208, 185, 109, 0.2);
+  }
+
+  .logo-glow {
+    text-shadow: 0 0 20px rgba(208, 185, 109, 0.4);
+    filter: drop-shadow(0 0 10px rgba(208, 185, 109, 0.5));
+  }
+
+  .gradient-gold {
+    background: linear-gradient(135deg, #D0B96D 0%, #B59F5A 100%);
+  }
+
+  .gradient-dark {
+    background: linear-gradient(135deg, #1a1a1a 0%, #292B2B 100%);
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(26, 26, 26, 0.7) 0%,
+      rgba(26, 26, 26, 0.4) 50%,
+      rgba(26, 26, 26, 0.9) 100%
+    );
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-button font-semibold text-sm uppercase tracking-nav;
+    @apply gradient-gold text-onyx shadow-gold transition-all duration-300 ease-peg;
+  }
+
+  .btn-primary:hover {
+    @apply -translate-y-0.5 shadow-gold-hover;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-button font-semibold text-sm uppercase tracking-nav;
+    @apply bg-transparent text-white border-2 border-gold/50 transition-all duration-300;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-gold/10 border-gold text-gold;
+  }
+
+  .card-service {
+    @apply bg-onyx/50 border border-gold/10 rounded-card p-8 transition-all duration-300;
+  }
+
+  .card-service:hover {
+    @apply -translate-y-1 border-gold/30 shadow-lg;
+  }
+
+  .section-tag {
+    @apply text-section-tag font-semibold uppercase tracking-tag text-gold mb-2;
+  }
+
+  .section-title {
+    @apply text-section-title font-black text-white mb-5;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* GPU acceleration for better animation performance */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+
+  /* Smooth color transitions */
+  .smooth-color {
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+  }
+
+  /* Scale animation */
+  .hover-scale {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  /* Lift animation */
+  .hover-lift {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Animation delays for staggered effects */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+.delay-900 { animation-delay: 0.9s; }
+.delay-1000 { animation-delay: 1s; }
+
+/* Ripple effect for buttons */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+}
+
+.ripple-effect:active::after {
+  animation: ripple 0.6s ease-out;
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) */
+.js-focus-visible :focus:not([data-focus-visible-added]) {
+  outline: none;
+}
+
+/* Smooth page transitions */
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fadeInPage 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Shimmer animation for AI button */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s infinite;
 }
