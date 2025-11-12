@@ -5,17 +5,32 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-// Environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Lazy initialization to avoid build-time errors
+let _supabaseAdmin: ReturnType<typeof createClient> | null = null
+let _supabaseClient: ReturnType<typeof createClient> | null = null
 
-if (!supabaseUrl) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+function getSupabaseUrl(): string {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  if (!url) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+  }
+  return url
 }
 
-if (!supabaseServiceKey) {
-  throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable')
+function getSupabaseServiceKey(): string {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!key) {
+    throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable')
+  }
+  return key
+}
+
+function getSupabaseAnonKey(): string {
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!key) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
+  }
+  return key
 }
 
 /**
@@ -23,10 +38,17 @@ if (!supabaseServiceKey) {
  * Use this in API routes for admin operations
  * Has full access, bypasses RLS policies
  */
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
+export const supabaseAdmin = new Proxy({} as ReturnType<typeof createClient>, {
+  get(target, prop) {
+    if (!_supabaseAdmin) {
+      _supabaseAdmin = createClient(getSupabaseUrl(), getSupabaseServiceKey(), {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      })
+    }
+    return (_supabaseAdmin as any)[prop]
   }
 })
 
@@ -35,7 +57,14 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
  * Use this in client components
  * Respects RLS policies
  */
-export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey)
+export const supabaseClient = new Proxy({} as ReturnType<typeof createClient>, {
+  get(target, prop) {
+    if (!_supabaseClient) {
+      _supabaseClient = createClient(getSupabaseUrl(), getSupabaseAnonKey())
+    }
+    return (_supabaseClient as any)[prop]
+  }
+})
 
 /**
  * Database Types
