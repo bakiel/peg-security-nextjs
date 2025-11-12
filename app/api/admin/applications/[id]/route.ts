@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { sanitizeString } from '@/lib/validation'
 
-// Admin route - use service role key to bypass RLS
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+// Force dynamic rendering (don't pre-render at build time)
+export const dynamic = 'force-dynamic'
 
 /**
  * PATCH /api/admin/applications/[id]
@@ -93,7 +90,7 @@ export async function PATCH(
     }
 
     // Update record in Supabase
-    const { data: updatedRecord, error } = await supabase
+    const { data: updatedRecord, error } = await supabaseAdmin
       .from('applications')
       .update(updateFields)
       .eq('id', id)
