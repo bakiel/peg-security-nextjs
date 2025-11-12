@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { validateLength, sanitizeString } from '@/lib/validation'
 
-// Admin route - use service role key to bypass RLS
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/admin/jobs
@@ -49,7 +45,7 @@ export async function GET(request: NextRequest) {
     const statusFilter = searchParams.get('status')
 
     // Build Supabase query
-    let query = supabase
+    let query = supabaseAdmin
       .from('jobs')
       .select('*')
 
@@ -274,7 +270,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create record in Supabase
-    const { data: createdJob, error } = await supabase
+    const { data: createdJob, error } = await supabaseAdmin
       .from('jobs')
       .insert([jobRecord])
       .select()

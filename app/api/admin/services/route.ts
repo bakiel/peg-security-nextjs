@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { z } from 'zod'
 import { sanitizeObject } from '@/lib/sanitize'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/admin/services
@@ -27,20 +29,8 @@ export async function GET(request: NextRequest) {
     const statusFilter = searchParams.get('status')
     const categoryFilter = searchParams.get('category')
 
-    // Create admin Supabase client (bypasses RLS)
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
     // Build query
-    let query = supabase
+    let query = supabaseAdmin
       .from('services')
       .select('*')
       .order('display_order', { ascending: true })
@@ -159,20 +149,8 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
 
-    // Create admin Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
     // Check if slug already exists
-    const { data: existingService } = await supabase
+    const { data: existingService } = await supabaseAdmin
       .from('services')
       .select('id')
       .eq('slug', slug)
@@ -206,7 +184,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert into database
-    const { data: createdService, error } = await supabase
+    const { data: createdService, error } = await supabaseAdmin
       .from('services')
       .insert(serviceRecord)
       .select()

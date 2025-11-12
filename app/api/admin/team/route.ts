@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { z } from 'zod'
 import { sanitizeObject } from '@/lib/sanitize'
 import { validateCsrf } from '@/lib/csrf'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/admin/team
@@ -26,20 +28,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const statusFilter = searchParams.get('status')
 
-    // Create admin Supabase client (bypasses RLS)
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
     // Build query
-    let query = supabase
+    let query = supabaseAdmin
       .from('team_members')
       .select('*')
       .order('display_order', { ascending: true })
@@ -149,18 +139,6 @@ export async function POST(request: NextRequest) {
 
     const data = validation.data
 
-    // Create admin Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
     // Prepare record
     const teamMemberRecord = {
       name: data.name,
@@ -176,7 +154,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert into database
-    const { data: createdTeamMember, error } = await supabase
+    const { data: createdTeamMember, error } = await supabaseAdmin
       .from('team_members')
       .insert(teamMemberRecord)
       .select()

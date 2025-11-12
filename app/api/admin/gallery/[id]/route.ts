@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { validateLength, sanitizeString } from '@/lib/validation'
 
-// Admin route - use service role key to bypass RLS
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
 
 /**
  * PATCH /api/admin/gallery/[id]
@@ -145,7 +141,7 @@ export async function PATCH(
     updateFields.updated_at = new Date().toISOString()
 
     // Update record in Supabase
-    const { data: updatedRecord, error } = await supabase
+    const { data: updatedRecord, error } = await supabaseAdmin
       .from('gallery')
       .update(updateFields)
       .eq('id', id)
@@ -225,7 +221,7 @@ export async function DELETE(
     }
 
     // First, fetch the record to get the Supabase Storage path
-    const { data: imageToDelete, error: fetchError } = await supabase
+    const { data: imageToDelete, error: fetchError } = await supabaseAdmin
       .from('gallery')
       .select('*')
       .eq('id', id)
@@ -244,7 +240,7 @@ export async function DELETE(
     // Delete image from Supabase Storage
     if (imageToDelete.image_public_id) {
       try {
-        const { error: storageError } = await supabase.storage
+        const { error: storageError } = await supabaseAdmin.storage
           .from('gallery')
           .remove([imageToDelete.image_public_id])
 
@@ -261,7 +257,7 @@ export async function DELETE(
     }
 
     // Delete record from Supabase
-    const { error: deleteError } = await supabase
+    const { error: deleteError } = await supabaseAdmin
       .from('gallery')
       .delete()
       .eq('id', id)

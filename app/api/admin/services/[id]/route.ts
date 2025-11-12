@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { z } from 'zod'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/admin/services/[id]
@@ -25,19 +27,7 @@ export async function GET(
       )
     }
 
-    // Create admin Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
-    const { data: service, error } = await supabase
+    const { data: service, error } = await supabaseAdmin
       .from('services')
       .select('*')
       .eq('id', id)
@@ -138,18 +128,6 @@ export async function PUT(
 
     const data = validation.data
 
-    // Create admin Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
     // If title is being updated, regenerate slug
     let updateData: any = { ...data }
 
@@ -160,7 +138,7 @@ export async function PUT(
         .replace(/^-+|-+$/g, '')
 
       // Check if slug already exists (excluding current service)
-      const { data: existingService } = await supabase
+      const { data: existingService } = await supabaseAdmin
         .from('services')
         .select('id')
         .eq('slug', newSlug)
@@ -181,7 +159,7 @@ export async function PUT(
     }
 
     // Update service
-    const { data: updatedService, error } = await supabase
+    const { data: updatedService, error } = await supabaseAdmin
       .from('services')
       .update(updateData)
       .eq('id', id)
@@ -252,20 +230,8 @@ export async function DELETE(
       )
     }
 
-    // Create admin Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
     // Delete service
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('services')
       .delete()
       .eq('id', id)

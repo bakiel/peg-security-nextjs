@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { validateLength, sanitizeString } from '@/lib/validation'
 import { processImageFromBase64 } from '@/lib/image-processing'
 
-// Admin route - use service role key to bypass RLS
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/admin/gallery
@@ -48,7 +44,7 @@ export async function GET(request: NextRequest) {
     const categoryFilter = searchParams.get('category')
 
     // Build Supabase query
-    let query = supabase
+    let query = supabaseAdmin
       .from('gallery')
       .select('*')
 
@@ -199,7 +195,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to Supabase Storage
     console.log('[ADMIN GALLERY] Uploading to Supabase Storage...')
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
       .from('gallery')
       .upload(fileName, processed.buffer, {
         contentType: 'image/jpeg',
@@ -213,7 +209,7 @@ export async function POST(request: NextRequest) {
     console.log('[ADMIN GALLERY] Upload successful:', uploadData.path)
 
     // Get public URL
-    const { data: urlData } = supabase.storage
+    const { data: urlData } = supabaseAdmin.storage
       .from('gallery')
       .getPublicUrl(uploadData.path)
 
@@ -233,7 +229,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create record in Supabase
-    const { data: createdImage, error } = await supabase
+    const { data: createdImage, error } = await supabaseAdmin
       .from('gallery')
       .insert([galleryRecord])
       .select()

@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { validateLength, sanitizeString } from '@/lib/validation'
 
-// Admin route - use service role key to bypass RLS
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
 
 /**
  * PATCH /api/admin/jobs/[id]
@@ -241,7 +237,7 @@ export async function PATCH(
     updateFields.updated_at = new Date().toISOString()
 
     // Update record in Supabase
-    const { data: updatedRecord, error } = await supabase
+    const { data: updatedRecord, error } = await supabaseAdmin
       .from('jobs')
       .update(updateFields)
       .eq('id', id)
@@ -319,7 +315,7 @@ export async function DELETE(
     }
 
     // Delete record from Supabase
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('jobs')
       .delete()
       .eq('id', id)

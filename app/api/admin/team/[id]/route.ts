@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import { z } from 'zod'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/admin/team/[id]
@@ -25,19 +27,7 @@ export async function GET(
       )
     }
 
-    // Create admin Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
-    const { data: teamMember, error } = await supabase
+    const { data: teamMember, error } = await supabaseAdmin
       .from('team_members')
       .select('*')
       .eq('id', id)
@@ -136,20 +126,8 @@ export async function PUT(
 
     const data = validation.data
 
-    // Create admin Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
     // Update team member
-    const { data: updatedTeamMember, error } = await supabase
+    const { data: updatedTeamMember, error } = await supabaseAdmin
       .from('team_members')
       .update(data)
       .eq('id', id)
@@ -220,20 +198,8 @@ export async function DELETE(
       )
     }
 
-    // Create admin Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
     // Delete team member
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('team_members')
       .delete()
       .eq('id', id)
