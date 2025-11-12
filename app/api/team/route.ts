@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseClient } from '@/lib/supabase'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/team
@@ -17,14 +19,8 @@ import { createClient } from '@supabase/supabase-js'
  */
 export async function GET(request: NextRequest) {
   try {
-    // Create public Supabase client (respects RLS)
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-
     // Query team members - RLS policy ensures only Active are returned
-    const { data: teamMembers, error } = await supabase
+    const { data: teamMembers, error } = await supabaseClient
       .from('team_members')
       .select('id, name, position, bio, photo_url, email, phone, linkedin_url, display_order')
       .eq('status', 'Active')

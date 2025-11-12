@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseClient } from '@/lib/supabase'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/services/[slug]
@@ -30,14 +32,8 @@ export async function GET(
       )
     }
 
-    // Create public Supabase client (respects RLS)
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-
     // Query service by slug - RLS ensures only Active are accessible
-    const { data: service, error } = await supabase
+    const { data: service, error } = await supabaseClient
       .from('services')
       .select('*')
       .eq('slug', slug)

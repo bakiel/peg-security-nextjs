@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseClient } from '@/lib/supabase'
 import { GalleryItem } from '@/lib/types'
 
-// Public route - use anon key to respect RLS
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/gallery
@@ -30,7 +26,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category')
 
     // Build Supabase query - ONLY return Active images for public API
-    let query = supabase
+    let query = supabaseClient
       .from('gallery')
       .select('*')
       .eq('status', 'Active')

@@ -12,6 +12,8 @@ import {
   generateSEOKeywords
 } from '@/lib/vision-ai'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/vision/analyze
  * Analyze images with AI (Gemini 2.0 Flash Experimental)

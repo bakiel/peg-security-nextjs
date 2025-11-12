@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
 
 /**
  * DEBUG ROUTE - Check gallery database and storage
@@ -12,7 +9,7 @@ const supabase = createClient(
 export async function GET() {
   try {
     // 1. Check database
-    const { data: dbImages, error: dbError } = await supabase
+    const { data: dbImages, error: dbError } = await supabaseAdmin
       .from('gallery')
       .select('*')
       .order('created_at', { ascending: false })
@@ -22,12 +19,12 @@ export async function GET() {
     }
 
     // 2. Check storage bucket
-    const { data: bucketFiles, error: bucketError } = await supabase.storage
+    const { data: bucketFiles, error: bucketError } = await supabaseAdmin.storage
       .from('gallery')
       .list()
 
     // 3. Check storage bucket config
-    const { data: buckets } = await supabase.storage.listBuckets()
+    const { data: buckets } = await supabaseAdmin.storage.listBuckets()
     const galleryBucket = buckets?.find(b => b.name === 'gallery')
 
     return NextResponse.json({

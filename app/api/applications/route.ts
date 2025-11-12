@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseClient } from '@/lib/supabase'
 import { rateLimit } from '@/lib/rate-limit'
 import {
   validateEmail,
@@ -13,11 +13,7 @@ import {
   sendApplicationNotification
 } from '@/lib/resend'
 
-// Public route - use anon key to respect RLS
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+export const dynamic = 'force-dynamic'
 
 /**
  * POST /api/applications
@@ -117,7 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get job details
-    const { data: job, error: jobError } = await supabase
+    const { data: job, error: jobError } = await supabaseClient
       .from('jobs')
       .select('*')
       .eq('id', jobId)
@@ -150,7 +146,7 @@ export async function POST(request: NextRequest) {
         const fileName = `${timestamp}-${sanitizedName}-${randomString}.${fileExt}`
 
         // Upload to Supabase Storage (cvs bucket)
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage
           .from('cvs')
           .upload(fileName, buffer, {
             contentType: cvFile.type || 'application/pdf',
@@ -209,7 +205,7 @@ export async function POST(request: NextRequest) {
         status: 'new'
       }
 
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('applications')
         .insert([applicationRecord])
 

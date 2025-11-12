@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseClient } from '@/lib/supabase'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/jobs/[slug]
@@ -24,14 +26,8 @@ export async function GET(
       )
     }
 
-    // Create Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-
     // Query Supabase for job with matching slug (only Open jobs)
-    const { data: job, error } = await supabase
+    const { data: job, error } = await supabaseClient
       .from('jobs')
       .select('*')
       .eq('slug', slug)
