@@ -3,7 +3,7 @@
 export const SITE_INFO = {
   name: 'PEG Security',
   tagline: 'Protection Excellence, Elite Service',
-  phone: '079 413 9180',
+  phone: '013 001 2849',
   email: 'info@pegsecurity.co.za',
   address: 'Johannesburg, South Africa',
   hours: '24/7 Emergency Response',

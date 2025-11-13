@@ -340,7 +340,7 @@ function LeadershipTeam() {
               {/* Contact Information */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <a
-                  href="tel:0794139180"
+                  href="tel:0130012849"
                   className="flex items-center gap-2 text-white/80 hover:text-gold transition-colors group"
                 >
                   <div className="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center group-hover:bg-gold/30 transition-colors">
@@ -348,11 +348,11 @@ function LeadershipTeam() {
                   </div>
                   <div>
                     <div className="text-xs text-white/60">Direct Line</div>
-                    <div className="font-semibold">079 413 9180</div>
+                    <div className="font-semibold">013 001 2849</div>
                   </div>
                 </a>
                 <a
-                  href="mailto:vusiz@pegholdings.co.za"
+                  href="mailto:info@pegsecurity.co.za"
                   className="flex items-center gap-2 text-white/80 hover:text-gold transition-colors group"
                 >
                   <div className="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center group-hover:bg-gold/30 transition-colors">
@@ -360,7 +360,7 @@ function LeadershipTeam() {
                   </div>
                   <div>
                     <div className="text-xs text-white/60">Email</div>
-                    <div className="font-semibold">vusiz@pegholdings.co.za</div>
+                    <div className="font-semibold">info@pegsecurity.co.za</div>
                   </div>
                 </a>
               </div>

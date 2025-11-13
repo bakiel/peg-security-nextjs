@@ -483,16 +483,10 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-poppins font-semibold text-white mb-2">Phone</h3>
                     <a
-                      href="tel:+27130012849"
-                      className="text-grey-light hover:text-gold transition-colors block mb-1"
-                    >
-                      013 001 2849 (Office)
-                    </a>
-                    <a
-                      href="tel:+27794139180"
+                      href="tel:0130012849"
                       className="text-grey-light hover:text-gold transition-colors block"
                     >
-                      079 413 9180 (Mobile)
+                      013 001 2849
                     </a>
                   </div>
                 </div>
