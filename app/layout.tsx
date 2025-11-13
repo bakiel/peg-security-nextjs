@@ -27,11 +27,20 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_ZA',
     siteName: 'PEG Security',
+    images: [
+      {
+        url: '/images/peg-security-whatsapp-share.jpg',
+        width: 512,
+        height: 512,
+        alt: 'PEG Security - Elite Protection Services',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'PEG Security - Elite Protection Services',
     description: 'Professional security services in Johannesburg, South Africa.',
+    images: ['/images/peg-security-whatsapp-share.jpg'],
   },
   viewport: {
     width: 'device-width',
