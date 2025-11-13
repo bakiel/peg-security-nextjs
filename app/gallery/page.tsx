@@ -1,123 +1,25 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import MobileMenu from '@/components/layout/MobileMenu'
 import Badge from '@/components/ui/Badge'
 import Modal from '@/components/ui/Modal'
-import { Image as ImageIcon, Shield, Users, MonitorPlay, Calendar, Heart, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Image as ImageIcon, Shield, Users, MonitorPlay, Calendar, Heart, ChevronLeft, ChevronRight, Camera } from 'lucide-react'
 
-// Gallery item type definition
+// Gallery item type definition (from API)
 interface GalleryItem {
-  id: number
+  id: string
   title: string
-  category: 'all' | 'operations' | 'training' | 'technology' | 'events' | 'community'
+  category: string
   description: string
-  image: string
+  imageUrl: string
+  thumbnailUrl?: string
   aspectRatio: 'landscape' | 'portrait' | 'square'
+  featured: boolean
 }
-
-// Gallery data with 1:1 square placeholder images
-const galleryItems: GalleryItem[] = [
-  {
-    id: 1,
-    title: 'SAIDSA Accredited Team',
-    category: 'training',
-    description: 'Fully accredited security personnel with SAIDSA membership and certification',
-    image: '/images/Armed_men_with_SAIDSA_logo_1-1.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 2,
-    title: 'Armed Response Officer',
-    category: 'operations',
-    description: 'Professional armed security officer ready for rapid response deployment',
-    image: '/images/Armed_security_guard_with_weapon.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 3,
-    title: 'Tactical Security Personnel',
-    category: 'operations',
-    description: 'Elite armed security personnel in tactical gear for high-risk operations',
-    image: '/images/Armed_security_personnel_in_black_gear.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 4,
-    title: '24/7 Monitoring Services',
-    category: 'technology',
-    description: 'Advanced CCTV monitoring and surveillance control room operations',
-    image: '/images/Monitoring_security_cameras.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 5,
-    title: 'Professional Security Guard',
-    category: 'operations',
-    description: 'Uniformed security officer maintaining professional presence and vigilance',
-    image: '/images/Security_guard_in_uniform.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 6,
-    title: 'Communications Specialist',
-    category: 'operations',
-    description: 'Security personnel with two-way radio communications for coordinated response',
-    image: '/images/Security_guard_with_walkie_talkie.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 7,
-    title: 'Uniformed Security Team',
-    category: 'operations',
-    description: 'Professional security team in full uniform providing comprehensive protection',
-    image: '/images/Security_personnel_in_uniform.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 8,
-    title: 'United Security Force',
-    category: 'operations',
-    description: 'Coordinated security team standing together for community protection',
-    image: '/images/Security_personnel_standing_together.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 9,
-    title: 'Armed Security Specialists',
-    category: 'operations',
-    description: 'Professional armed security personnel providing elite protection services',
-    image: '/images/Security_personnel_with_weapons_1-1.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 10,
-    title: 'Three-Person Security Detail',
-    category: 'operations',
-    description: 'Coordinated three-person security team demonstrating tactical readiness',
-    image: '/images/Three_armed_security_personnel_posing_1-1.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 11,
-    title: 'Access Control Technology',
-    category: 'technology',
-    description: 'Modern touchscreen access control and security management systems',
-    image: '/images/Touchscreen_passcode_entry_screen.jpg',
-    aspectRatio: 'square'
-  },
-  {
-    id: 12,
-    title: 'Traffic Surveillance Systems',
-    category: 'technology',
-    description: 'Advanced traffic camera monitoring for comprehensive area surveillance',
-    image: '/images/Traffic_camera_with_flashing_lights.jpg',
-    aspectRatio: 'square'
-  }
-]
 
 // Category configuration
 const categories = [
@@ -134,6 +36,28 @@ export default function GalleryPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch gallery items from API
+  useEffect(() => {
+    async function fetchGallery() {
+      try {
+        const response = await fetch('/api/gallery')
+        const result = await response.json()
+
+        if (result.success) {
+          setGalleryItems(result.data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch gallery:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchGallery()
+  }, [])
 
   // Filter gallery items based on selected category
   const filteredItems = selectedCategory === 'all'
@@ -196,7 +120,7 @@ export default function GalleryPage() {
         <div className="container-peg relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <Badge variant="default" size="md" className="mb-6">
-              <ImageIcon size={16} />
+              <Camera size={16} />
               Media Gallery
             </Badge>
             <h1 className="font-display text-hero-title font-black text-white leading-hero mb-6">
@@ -236,32 +160,48 @@ export default function GalleryPage() {
             ))}
           </div>
 
-          {/* Gallery Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredItems.map((item) => (
-              <GalleryCard
-                key={item.id}
-                item={item}
-                onClick={() => handleImageClick(item)}
-              />
-            ))}
-          </div>
-
-          {/* No Results Message */}
-          {filteredItems.length === 0 && (
+          {/* Loading State */}
+          {loading && (
             <div className="text-center py-20">
-              <ImageIcon size={64} className="text-gold/30 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">No Items Found</h3>
-              <p className="text-white/60">Try selecting a different category</p>
+              <div className="inline-block animate-spin w-12 h-12 border-4 border-gold/30 border-t-gold rounded-full mb-4" />
+              <p className="text-white/60">Loading gallery...</p>
             </div>
           )}
 
-          {/* Item Count */}
-          <div className="text-center mt-12">
-            <p className="text-white/60 text-sm uppercase tracking-nav">
-              Showing {filteredItems.length} of {galleryItems.length} items
-            </p>
-          </div>
+          {/* Gallery Grid */}
+          {!loading && filteredItems.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredItems.map((item) => (
+                  <GalleryCard
+                    key={item.id}
+                    item={item}
+                    onClick={() => handleImageClick(item)}
+                  />
+                ))}
+              </div>
+
+              {/* Item Count */}
+              <div className="text-center mt-12">
+                <p className="text-white/60 text-sm uppercase tracking-nav">
+                  Showing {filteredItems.length} of {galleryItems.length} items
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* No Results Message */}
+          {!loading && filteredItems.length === 0 && (
+            <div className="text-center py-20">
+              <ImageIcon size={64} className="text-gold/30 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-white mb-2">No Items Found</h3>
+              <p className="text-white/60">
+                {galleryItems.length === 0
+                  ? 'Gallery items will appear here once added'
+                  : 'Try selecting a different category'}
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -287,7 +227,7 @@ export default function GalleryPage() {
                   'aspect-video'}
               `}>
                 <Image
-                  src={selectedImage.image}
+                  src={selectedImage.imageUrl}
                   alt={selectedImage.title}
                   fill
                   className="object-cover"
@@ -311,36 +251,42 @@ export default function GalleryPage() {
               </div>
 
               {/* Navigation Arrows */}
-              <button
-                onClick={handlePreviousImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-4 rounded-full
-                  bg-onyx/80 border border-gold/30 text-gold
-                  hover:bg-gold hover:text-onyx hover:scale-110
-                  transition-all duration-300 backdrop-blur-sm"
-                aria-label="Previous image"
-              >
-                <ChevronLeft size={24} />
-              </button>
-              <button
-                onClick={handleNextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-4 rounded-full
-                  bg-onyx/80 border border-gold/30 text-gold
-                  hover:bg-gold hover:text-onyx hover:scale-110
-                  transition-all duration-300 backdrop-blur-sm"
-                aria-label="Next image"
-              >
-                <ChevronRight size={24} />
-              </button>
+              {filteredItems.length > 1 && (
+                <>
+                  <button
+                    onClick={handlePreviousImage}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-4 rounded-full
+                      bg-onyx/80 border border-gold/30 text-gold
+                      hover:bg-gold hover:text-onyx hover:scale-110
+                      transition-all duration-300 backdrop-blur-sm"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button
+                    onClick={handleNextImage}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-4 rounded-full
+                      bg-onyx/80 border border-gold/30 text-gold
+                      hover:bg-gold hover:text-onyx hover:scale-110
+                      transition-all duration-300 backdrop-blur-sm"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Image Counter */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-              <div className="bg-onyx/80 backdrop-blur-sm border border-gold/30 rounded-full px-6 py-2">
-                <p className="text-white text-sm font-semibold">
-                  {filteredItems.findIndex(item => item.id === selectedImage.id) + 1} / {filteredItems.length}
-                </p>
+            {filteredItems.length > 1 && (
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+                <div className="bg-onyx/80 backdrop-blur-sm border border-gold/30 rounded-full px-6 py-2">
+                  <p className="text-white text-sm font-semibold">
+                    {filteredItems.findIndex(item => item.id === selectedImage.id) + 1} / {filteredItems.length}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </Modal>
@@ -376,7 +322,7 @@ function GalleryCard({ item, onClick }: GalleryCardProps) {
       `}>
         {/* Image */}
         <Image
-          src={item.image}
+          src={item.thumbnailUrl || item.imageUrl}
           alt={item.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -392,8 +338,11 @@ function GalleryCard({ item, onClick }: GalleryCardProps) {
             <h3 className="text-white font-bold text-lg mb-2 text-left">
               {item.title}
             </h3>
+            <p className="text-white/70 text-sm mb-3 text-left line-clamp-2">
+              {item.description}
+            </p>
             <Badge variant="default" size="sm">
-              {categories.find(cat => cat.id === item.category)?.label}
+              {categories.find(cat => cat.id === item.category)?.label || item.category}
             </Badge>
           </div>
         </div>
@@ -404,6 +353,9 @@ function GalleryCard({ item, onClick }: GalleryCardProps) {
         <h4 className="text-white font-semibold text-sm text-left truncate">
           {item.title}
         </h4>
+        <p className="text-white/50 text-xs text-left mt-1 capitalize">
+          {item.category}
+        </p>
       </div>
     </button>
   )

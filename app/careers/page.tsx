@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import MobileMenu from '@/components/layout/MobileMenu'
@@ -33,9 +33,9 @@ import Image from 'next/image'
 interface JobListing {
   id: string
   title: string
-  category: 'operations' | 'management' | 'technology' | 'administration'
+  category: string
   location: string
-  employmentType: 'Full-time' | 'Part-time' | 'Contract'
+  employmentType: string
   psiraRequired: boolean
   description: string
   responsibilities: string[]
@@ -43,357 +43,11 @@ interface JobListing {
   benefits: string[]
 }
 
-// Job Data
-const jobListings: JobListing[] = [
-  {
-    id: 'job-001',
-    title: 'Security Officer',
-    category: 'operations',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: true,
-    description: 'Professional security officers required for static guarding and patrol duties at residential estates and commercial properties. Provide access control, visitor management, and incident response services.',
-    responsibilities: [
-      'Access control and visitor verification at designated entry points',
-      'Regular perimeter patrols and checkpoint monitoring',
-      'Incident logging and detailed reporting',
-      'Emergency response coordination and communication'
-    ],
-    requirements: [
-      'Valid PSIRA Grade C or higher registration',
-      'Minimum 2 years security industry experience',
-      'Clear criminal record and reference checks',
-      'Professional appearance and communication skills',
-      'Ability to work shifts including nights and weekends'
-    ],
-    benefits: [
-      'Competitive salary package',
-      'Full uniform and equipment provided',
-      'Medical aid contributions',
-      'Ongoing training and development',
-      'Career advancement opportunities'
-    ]
-  },
-  {
-    id: 'job-002',
-    title: 'Armed Response Officer',
-    category: 'operations',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: true,
-    description: 'Join our armed response team providing rapid emergency response services across designated service areas. Respond to alarm activations, panic alerts, and security emergencies with professionalism and tactical expertise.',
-    responsibilities: [
-      'Rapid response to alarm activations and emergency callouts',
-      'Professional threat assessment and incident resolution',
-      'Property inspections and proactive security patrols',
-      'Client communication and incident reporting'
-    ],
-    requirements: [
-      'Valid PSIRA Grade A registration with firearm competency',
-      'Valid driver\'s licence (Code 08 or higher)',
-      'Minimum 3 years armed response experience',
-      'Tactical training and emergency response certification',
-      'Excellent navigation and local area knowledge'
-    ],
-    benefits: [
-      'Above-industry salary package',
-      'Company vehicle and fuel card',
-      'Comprehensive insurance coverage',
-      'PSIRA renewal sponsorship',
-      'Performance-based incentives'
-    ]
-  },
-  {
-    id: 'job-003',
-    title: 'K9 Handler',
-    category: 'operations',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: true,
-    description: 'Experienced K9 handlers required for patrol and detection operations. Work with trained security dogs providing enhanced deterrence and detection capabilities across various deployment scenarios.',
-    responsibilities: [
-      'Conduct K9 patrol operations at designated sites',
-      'Maintain canine health, welfare, and training',
-      'Perform detection sweeps for explosives or narcotics',
-      'Coordinate with security teams and clients'
-    ],
-    requirements: [
-      'Valid PSIRA registration with K9 handler endorsement',
-      'Proven experience handling security dogs',
-      'K9 training certification from recognised institution',
-      'Physical fitness and ability to work outdoors',
-      'Own transportation for K9 welfare'
-    ],
-    benefits: [
-      'Specialist salary package',
-      'K9 care allowance and veterinary support',
-      'Advanced training opportunities',
-      'Uniform and specialised equipment',
-      'Career progression in K9 operations'
-    ]
-  },
-  {
-    id: 'job-004',
-    title: 'Operations Manager',
-    category: 'management',
-    location: 'Morgenzon / Mpumalanga',
-    employmentType: 'Full-time',
-    psiraRequired: true,
-    description: 'Strategic operations management role overseeing security service delivery, personnel deployment, and client relationship management. Lead operational teams ensuring service excellence and regulatory compliance.',
-    responsibilities: [
-      'Oversee daily security operations and service delivery',
-      'Manage personnel deployment and shift scheduling',
-      'Client relationship management and service quality assurance',
-      'Operational compliance and incident investigation'
-    ],
-    requirements: [
-      'Valid PSIRA registration (Grade A or Security Manager)',
-      'Minimum 5 years security management experience',
-      'Proven leadership and team management skills',
-      'Tertiary qualification in Security Management advantageous',
-      'Advanced computer literacy and reporting skills'
-    ],
-    benefits: [
-      'Executive salary package',
-      'Company vehicle and mobile phone',
-      'Medical aid and retirement fund',
-      'Performance bonuses',
-      'Professional development support'
-    ]
-  },
-  {
-    id: 'job-005',
-    title: 'Site Supervisor',
-    category: 'management',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: true,
-    description: 'Experienced site supervisors required to manage security operations at large commercial and industrial facilities. Provide on-site leadership, quality control, and client liaison services.',
-    responsibilities: [
-      'On-site supervision of security personnel',
-      'Quality control and performance management',
-      'Client liaison and service delivery oversight',
-      'Incident investigation and reporting'
-    ],
-    requirements: [
-      'Valid PSIRA registration (Grade B or higher)',
-      'Minimum 3 years supervisory experience',
-      'Strong communication and interpersonal skills',
-      'Report writing and computer literacy',
-      'Own reliable transportation'
-    ],
-    benefits: [
-      'Competitive salary package',
-      'Travel allowance',
-      'Medical aid contributions',
-      'Skills development programmes',
-      'Promotion opportunities'
-    ]
-  },
-  {
-    id: 'job-006',
-    title: 'Control Room Operator',
-    category: 'technology',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: true,
-    description: 'Monitor CCTV surveillance systems, coordinate armed response deployments, and provide 24/7 operational support from our state-of-the-art control room facility.',
-    responsibilities: [
-      'Monitor multiple CCTV feeds and alarm systems',
-      'Coordinate emergency response deployments',
-      'Client communication and incident logging',
-      'System monitoring and technical troubleshooting'
-    ],
-    requirements: [
-      'Valid PSIRA registration',
-      'Experience with CCTV and monitoring systems',
-      'Excellent communication and multi-tasking abilities',
-      'Computer literacy and system operation skills',
-      'Ability to work shifts including nights'
-    ],
-    benefits: [
-      'Competitive salary',
-      'Shift allowances',
-      'Climate-controlled work environment',
-      'Technical training provided',
-      'Career growth in security technology'
-    ]
-  },
-  {
-    id: 'job-007',
-    title: 'CCTV Technician',
-    category: 'technology',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: false,
-    description: 'Skilled technicians required for installation, maintenance, and repair of CCTV surveillance systems, access control, and integrated security technology platforms.',
-    responsibilities: [
-      'Install and configure CCTV and IP camera systems',
-      'Troubleshoot and repair security technology equipment',
-      'Conduct system testing and quality assurance',
-      'Provide technical training to clients'
-    ],
-    requirements: [
-      'Electrical or electronics qualification',
-      'Proven experience with IP CCTV systems',
-      'Network configuration knowledge',
-      'Valid driver\'s licence',
-      'Technical certifications advantageous'
-    ],
-    benefits: [
-      'Market-related salary',
-      'Company vehicle and tools provided',
-      'Technical training and certifications',
-      'Medical aid scheme',
-      'Travel and accommodation allowances'
-    ]
-  },
-  {
-    id: 'job-008',
-    title: 'Systems Integration Specialist',
-    category: 'technology',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: false,
-    description: 'Advanced technical role designing and implementing integrated security solutions combining CCTV, access control, intrusion detection, and monitoring platforms.',
-    responsibilities: [
-      'Design integrated security technology solutions',
-      'Configure and programme advanced systems',
-      'Client consultation and technical presentations',
-      'Project management and implementation oversight'
-    ],
-    requirements: [
-      'IT or Electronics qualification (diploma or degree)',
-      'Extensive security systems integration experience',
-      'Programming and networking expertise',
-      'Project management capabilities',
-      'Technical certifications from major manufacturers'
-    ],
-    benefits: [
-      'Specialist salary package',
-      'Company vehicle and equipment',
-      'Advanced training opportunities',
-      'Medical aid and retirement benefits',
-      'Performance incentives'
-    ]
-  },
-  {
-    id: 'job-009',
-    title: 'HR & Recruitment Officer',
-    category: 'administration',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: false,
-    description: 'Join our HR team managing recruitment, personnel administration, and employee relations for our growing security operations across multiple regions.',
-    responsibilities: [
-      'Recruitment and selection of security personnel',
-      'Personnel administration and record management',
-      'PSIRA compliance and registration management',
-      'Employee relations and conflict resolution'
-    ],
-    requirements: [
-      'HR qualification (diploma or degree)',
-      'Minimum 2 years HR experience',
-      'Knowledge of labour legislation',
-      'Computer literacy (HR systems and MS Office)',
-      'Strong interpersonal and communication skills'
-    ],
-    benefits: [
-      'Competitive salary',
-      'Office-based position',
-      'Medical aid and retirement fund',
-      'Professional development support',
-      'Stable work hours'
-    ]
-  },
-  {
-    id: 'job-010',
-    title: 'Compliance & Quality Officer',
-    category: 'administration',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: false,
-    description: 'Ensure operational compliance with security industry regulations, quality standards, and client requirements through auditing, documentation, and continuous improvement initiatives.',
-    responsibilities: [
-      'Conduct compliance audits and site inspections',
-      'Manage PSIRA compliance and registrations',
-      'Quality assurance monitoring and reporting',
-      'Training coordination and certification management'
-    ],
-    requirements: [
-      'Security management or compliance qualification',
-      'Understanding of PSIRA regulations and standards',
-      'Auditing and quality management experience',
-      'Excellent documentation and reporting skills',
-      'Valid driver\'s licence and own transport'
-    ],
-    benefits: [
-      'Professional salary package',
-      'Travel allowance',
-      'Medical aid contributions',
-      'Professional certification support',
-      'Career progression opportunities'
-    ]
-  },
-  {
-    id: 'job-011',
-    title: 'Training Coordinator',
-    category: 'administration',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: true,
-    description: 'Manage training programmes, skills development initiatives, and professional certification for security personnel ensuring ongoing competency and regulatory compliance.',
-    responsibilities: [
-      'Develop and deliver security training programmes',
-      'Coordinate skills development initiatives',
-      'Manage training schedules and assessments',
-      'Maintain training records and compliance documentation'
-    ],
-    requirements: [
-      'Valid PSIRA registration (Security Manager or Trainer)',
-      'Training and assessment qualification',
-      'Experience in security training delivery',
-      'Presentation and facilitation skills',
-      'Computer literacy and administration capabilities'
-    ],
-    benefits: [
-      'Competitive salary',
-      'Training resources provided',
-      'Professional development opportunities',
-      'Medical aid scheme',
-      'Stable work environment'
-    ]
-  },
-  {
-    id: 'job-012',
-    title: 'Client Liaison Officer',
-    category: 'administration',
-    location: 'Mpumalanga Region',
-    employmentType: 'Full-time',
-    psiraRequired: false,
-    description: 'Dedicated client relationship management role ensuring service excellence, addressing client concerns, and maintaining high levels of customer satisfaction and retention.',
-    responsibilities: [
-      'Client relationship management and communication',
-      'Service delivery monitoring and quality assurance',
-      'Complaint resolution and client feedback management',
-      'Contract administration and renewal coordination'
-    ],
-    requirements: [
-      'Relevant qualification in business or customer service',
-      'Proven client relationship management experience',
-      'Excellent communication and interpersonal skills',
-      'Problem-solving and conflict resolution abilities',
-      'Computer literacy and CRM system experience'
-    ],
-    benefits: [
-      'Market-related salary',
-      'Client entertainment allowance',
-      'Medical aid and benefits',
-      'Performance bonuses',
-      'Professional work environment'
-    ]
-  }
-]
+// Helper function to parse list strings from API
+function parseListString(str: string): string[] {
+  if (!str) return []
+  return str.split('\n').filter(line => line.trim()).map(line => line.replace(/^[•\-*]\s*/, '').trim())
+}
 
 // Categories for filtering
 const categories = [
@@ -424,6 +78,42 @@ export default function CareersPage() {
   const [selectedLocation, setSelectedLocation] = useState<string>('all')
   const [selectedEmploymentType, setSelectedEmploymentType] = useState<string>('all')
   const [expandedJob, setExpandedJob] = useState<string | null>(null)
+  const [jobListings, setJobListings] = useState<JobListing[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch jobs from API
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const response = await fetch('/api/jobs')
+        const result = await response.json()
+
+        if (result.success) {
+          // Transform API data to component format
+          const transformedJobs: JobListing[] = result.data.map((job: any) => ({
+            id: job.id,
+            title: job.title,
+            category: job.category.toLowerCase().replace(/\s+/g, '-'),
+            location: job.location,
+            employmentType: job.employment_type,
+            psiraRequired: job.psira_required,
+            description: job.description,
+            responsibilities: parseListString(job.responsibilities),
+            requirements: parseListString(job.requirements),
+            benefits: parseListString(job.benefits)
+          }))
+
+          setJobListings(transformedJobs)
+        }
+      } catch (error) {
+        console.error('Failed to fetch jobs:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchJobs()
+  }, [])
 
   // Filter jobs based on selected filters
   const filteredJobs = useMemo(() => {
@@ -434,7 +124,7 @@ export default function CareersPage() {
 
       return categoryMatch && locationMatch && typeMatch
     })
-  }, [selectedCategory, selectedLocation, selectedEmploymentType])
+  }, [jobListings, selectedCategory, selectedLocation, selectedEmploymentType])
 
   const toggleJobExpansion = (jobId: string) => {
     setExpandedJob(expandedJob === jobId ? null : jobId)
@@ -702,7 +392,12 @@ export default function CareersPage() {
 
           {/* Job Listings */}
           <div className="space-y-6">
-            {filteredJobs.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-20">
+                <div className="inline-block animate-spin w-12 h-12 border-4 border-gold/30 border-t-gold rounded-full mb-4" />
+                <p className="text-white/60">Loading job opportunities...</p>
+              </div>
+            ) : filteredJobs.length === 0 ? (
               <div className="bg-onyx/50 border border-gold/20 rounded-card p-12 text-center">
                 <Target className="text-gold/50 mx-auto mb-4" size={48} />
                 <h3 className="font-display text-2xl font-bold text-white mb-3">

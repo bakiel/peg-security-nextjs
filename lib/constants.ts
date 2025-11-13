@@ -100,8 +100,6 @@ export const HERO_SLIDES = [
 export const STATS = [
   { value: '24/7', label: 'Armed Response' },
   { value: '<5min', label: 'Reaction Time' },
-  { value: 'Mpumalanga', label: 'Regional Focus' },
-  { value: 'PSIRA', label: 'Certified' },
 ] as const;
 
 export const CERTIFICATIONS = [
