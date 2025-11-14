@@ -52,17 +52,6 @@ export interface SessionData {
  * Verify admin login credentials
  */
 export function verifyCredentials(username: string, password: string): boolean {
-  // Debug logging
-  console.log('[AUTH DEBUG] Credentials check:', {
-    providedUsername: username,
-    expectedUsername: ADMIN_CREDENTIALS.username,
-    usernameMatch: username === ADMIN_CREDENTIALS.username,
-    providedPasswordLength: password.length,
-    expectedPasswordLength: ADMIN_CREDENTIALS.password.length,
-    passwordsMatch: password === ADMIN_CREDENTIALS.password,
-    envVarExists: !!process.env.ADMIN_PASSWORD
-  })
-
   // Simple comparison for now
   // In production, use bcrypt.compare() with hashed passwords
   return (
