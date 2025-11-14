@@ -501,13 +501,13 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-poppins font-semibold text-white mb-2">Email</h3>
                     <a
-                      href="mailto:vusiz@pegholdings.co.za"
+                      href="mailto:info@pegsecurity.co.za"
                       className="text-grey-light hover:text-gold transition-colors block mb-1"
                     >
-                      vusiz@pegholdings.co.za
+                      info@pegsecurity.co.za
                     </a>
                     <p className="text-grey-light/60 text-sm mt-2">
-                      Vusi Z., Executive Representative
+                      General Inquiries
                     </p>
                   </div>
                 </div>

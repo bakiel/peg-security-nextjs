@@ -35,8 +35,9 @@ export default function AdminLoginPage() {
         return
       }
 
-      // Redirect to admin dashboard
-      router.push('/admin/dashboard')
+      // Login successful - redirect to admin dashboard
+      // Force a hard navigation to ensure cookies are set
+      window.location.href = '/admin/dashboard'
     } catch (err) {
       setError('Connection error. Please check your network and try again.')
       setIsSubmitting(false)
@@ -248,7 +249,7 @@ export default function AdminLoginPage() {
 
         {/* Bottom Notice */}
         <div className="mt-6 text-center text-sm text-gray-400">
-          <p>Need assistance? Contact IT support at <span className="text-[#D0B96D]">+27 79 413 9180</span></p>
+          <p>Need assistance? Contact IT support at <span className="text-[#D0B96D]">013 001 2849</span></p>
         </div>
       </div>
     </div>
