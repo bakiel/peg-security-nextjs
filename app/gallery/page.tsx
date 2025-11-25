@@ -108,14 +108,14 @@ export default function GalleryPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="/images/Security_camera_in_a_building.jpg"
-            alt="Professional security surveillance technology"
+            src="/images/peg-security-vehicle-field.png"
+            alt="PEG Security vehicle on patrol across South African terrain"
             fill
-            className="object-cover object-top"
+            className="object-cover object-center"
             priority
-            quality={90}
+            quality={95}
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-onyx/90 via-onyx/80 to-onyx/90" />
+          <div className="absolute inset-0 bg-gradient-to-br from-onyx/85 via-onyx/70 to-onyx/60" />
         </div>
         <div className="container-peg relative z-10">
           <div className="text-center max-w-4xl mx-auto">
