@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get job details
-    const { data: job, error: jobError } = await supabaseClient
+    const { data: job, error: jobError } = await db
       .from('jobs')
       .select('*')
       .eq('id', jobId)
@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
         const fileName = `${timestamp}-${sanitizedName}-${randomString}.${fileExt}`
 
         // Upload to Supabase Storage (cvs bucket)
-        const { data: uploadData, error: uploadError } = await supabaseClient.storage
+        const { data: uploadData, error: uploadError } = await db.storage
           .from('cvs')
           .upload(fileName, buffer, {
             contentType: cvFile.type || 'application/pdf',
@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
         status: 'new'
       }
 
-      const { error } = await supabaseClient
+      const { error } = await db
         .from('applications')
         .insert([applicationRecord])
 

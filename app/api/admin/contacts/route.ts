@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     const statusFilter = searchParams.get('status')
 
     // Build query
-    let query = supabaseAdmin
+    let query = db
       .from('contacts')
       .select('*')
       .order('submitted_at', { ascending: false })

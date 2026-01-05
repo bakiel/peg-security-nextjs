@@ -90,7 +90,7 @@ export async function PATCH(
     }
 
     // Update record in Supabase
-    const { data: updatedRecord, error } = await supabaseAdmin
+    const { data: updatedRecord, error } = await db
       .from('applications')
       .update(updateFields)
       .eq('id', id)

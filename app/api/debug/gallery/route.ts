@@ -1,31 +1,43 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { readdir } from 'fs/promises'
+import { existsSync } from 'fs'
+import path from 'path'
 
 export const dynamic = 'force-dynamic'
 
+const UPLOAD_BASE_DIR = process.env.UPLOAD_DIR || '/opt/peg-security/uploads'
+
 /**
- * DEBUG ROUTE - Check gallery database and storage
+ * DEBUG ROUTE - Check gallery database and filesystem storage
  */
 export async function GET() {
   try {
     // 1. Check database
-    const { data: dbImages, error: dbError } = await supabaseAdmin
+    const { data: dbImages, error: dbError } = await db
       .from('gallery')
       .select('*')
       .order('created_at', { ascending: false })
+      .execute()
 
     if (dbError) {
       throw dbError
     }
 
-    // 2. Check storage bucket
-    const { data: bucketFiles, error: bucketError } = await supabaseAdmin.storage
-      .from('gallery')
-      .list()
+    // 2. Check filesystem storage
+    const galleryDir = path.join(UPLOAD_BASE_DIR, 'gallery')
+    let filesystemFiles: string[] = []
+    let filesystemError: string | null = null
 
-    // 3. Check storage bucket config
-    const { data: buckets } = await supabaseAdmin.storage.listBuckets()
-    const galleryBucket = buckets?.find(b => b.name === 'gallery')
+    try {
+      if (existsSync(galleryDir)) {
+        filesystemFiles = await readdir(galleryDir)
+      } else {
+        filesystemError = 'Gallery directory does not exist'
+      }
+    } catch (error) {
+      filesystemError = error instanceof Error ? error.message : 'Unknown error'
+    }
 
     return NextResponse.json({
       success: true,
@@ -33,12 +45,12 @@ export async function GET() {
         totalImages: dbImages?.length || 0,
         images: dbImages || []
       },
-      storage: {
-        bucketExists: !!galleryBucket,
-        bucketPublic: galleryBucket?.public || false,
-        totalFiles: bucketFiles?.length || 0,
-        files: bucketFiles || [],
-        error: bucketError?.message || null
+      filesystem: {
+        directoryExists: existsSync(galleryDir),
+        directoryPath: galleryDir,
+        totalFiles: filesystemFiles.length,
+        files: filesystemFiles,
+        error: filesystemError
       }
     })
   } catch (error) {

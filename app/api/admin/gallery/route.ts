@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     const categoryFilter = searchParams.get('category')
 
     // Build Supabase query
-    let query = supabaseAdmin
+    let query = db
       .from('gallery')
       .select('*')
 
@@ -195,7 +195,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to Supabase Storage
     console.log('[ADMIN GALLERY] Uploading to Supabase Storage...')
-    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+    const { data: uploadData, error: uploadError } = await db.storage
       .from('gallery')
       .upload(fileName, processed.buffer, {
         contentType: 'image/jpeg',
@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
     console.log('[ADMIN GALLERY] Upload successful:', uploadData.path)
 
     // Get public URL
-    const { data: urlData } = supabaseAdmin.storage
+    const { data: urlData } = db.storage
       .from('gallery')
       .getPublicUrl(uploadData.path)
 
@@ -229,7 +229,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create record in Supabase
-    const { data: createdImage, error } = await supabaseAdmin
+    const { data: createdImage, error } = await db
       .from('gallery')
       .insert([galleryRecord])
       .select()

@@ -27,7 +27,7 @@ export async function GET(
       )
     }
 
-    const { data: teamMember, error } = await supabaseAdmin
+    const { data: teamMember, error } = await db
       .from('team_members')
       .select('*')
       .eq('id', id)
@@ -127,7 +127,7 @@ export async function PUT(
     const data = validation.data
 
     // Update team member
-    const { data: updatedTeamMember, error } = await supabaseAdmin
+    const { data: updatedTeamMember, error } = await db
       .from('team_members')
       .update(data)
       .eq('id', id)
@@ -199,7 +199,7 @@ export async function DELETE(
     }
 
     // Delete team member
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('team_members')
       .delete()
       .eq('id', id)

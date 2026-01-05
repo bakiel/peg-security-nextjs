@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category')
 
     // Build query - RLS policy ensures only Active are returned
-    let query = supabaseClient
+    let query = db
       .from('services')
       .select(`
         id,

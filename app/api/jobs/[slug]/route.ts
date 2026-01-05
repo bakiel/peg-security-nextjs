@@ -27,7 +27,7 @@ export async function GET(
     }
 
     // Query Supabase for job with matching slug (only Open jobs)
-    const { data: job, error } = await supabaseClient
+    const { data: job, error } = await db
       .from('jobs')
       .select('*')
       .eq('slug', slug)

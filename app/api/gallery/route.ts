@@ -25,8 +25,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
 
-    // Build Supabase query - ONLY return Active images for public API
-    let query = supabaseClient
+    // Build database query - ONLY return Active images for public API
+    let query = db
       .from('gallery')
       .select('*')
       .eq('status', 'Active')
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       .order('display_order', { ascending: true })
       .order('created_at', { ascending: false })
 
-    const { data: records, error } = await query
+    const { data: records, error } = await query.execute()
 
     if (error) {
       throw error

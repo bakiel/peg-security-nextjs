@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     const statusFilter = searchParams.get('status')
 
     // Build query
-    let query = supabaseAdmin
+    let query = db
       .from('team_members')
       .select('*')
       .order('display_order', { ascending: true })
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert into database
-    const { data: createdTeamMember, error } = await supabaseAdmin
+    const { data: createdTeamMember, error } = await db
       .from('team_members')
       .insert(teamMemberRecord)
       .select()

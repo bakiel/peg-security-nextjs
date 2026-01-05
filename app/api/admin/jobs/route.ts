@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     const statusFilter = searchParams.get('status')
 
     // Build Supabase query
-    let query = supabaseAdmin
+    let query = db
       .from('jobs')
       .select('*')
 
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create record in Supabase
-    const { data: createdJob, error } = await supabaseAdmin
+    const { data: createdJob, error } = await db
       .from('jobs')
       .insert([jobRecord])
       .select()

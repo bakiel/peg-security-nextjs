@@ -33,7 +33,7 @@ export async function GET(
     }
 
     // Query service by slug - RLS ensures only Active are accessible
-    const { data: service, error } = await supabaseClient
+    const { data: service, error } = await db
       .from('services')
       .select('*')
       .eq('slug', slug)

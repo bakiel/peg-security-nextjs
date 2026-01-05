@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     const jobIdFilter = searchParams.get('jobId')
 
     // Build query
-    let query = supabaseAdmin
+    let query = db
       .from('applications')
       .select('*')
       .order('submitted_at', { ascending: false })

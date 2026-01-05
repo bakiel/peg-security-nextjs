@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const categoryFilter = searchParams.get('category')
 
     // Build query
-    let query = supabaseAdmin
+    let query = db
       .from('services')
       .select('*')
       .order('display_order', { ascending: true })
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
       .replace(/^-+|-+$/g, '')
 
     // Check if slug already exists
-    const { data: existingService } = await supabaseAdmin
+    const { data: existingService } = await db
       .from('services')
       .select('id')
       .eq('slug', slug)
@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert into database
-    const { data: createdService, error } = await supabaseAdmin
+    const { data: createdService, error } = await db
       .from('services')
       .insert(serviceRecord)
       .select()

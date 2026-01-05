@@ -141,7 +141,7 @@ export async function PATCH(
     updateFields.updated_at = new Date().toISOString()
 
     // Update record in Supabase
-    const { data: updatedRecord, error } = await supabaseAdmin
+    const { data: updatedRecord, error } = await db
       .from('gallery')
       .update(updateFields)
       .eq('id', id)
@@ -221,7 +221,7 @@ export async function DELETE(
     }
 
     // First, fetch the record to get the Supabase Storage path
-    const { data: imageToDelete, error: fetchError } = await supabaseAdmin
+    const { data: imageToDelete, error: fetchError } = await db
       .from('gallery')
       .select('*')
       .eq('id', id)
@@ -240,7 +240,7 @@ export async function DELETE(
     // Delete image from Supabase Storage
     if (imageToDelete.image_public_id) {
       try {
-        const { error: storageError } = await supabaseAdmin.storage
+        const { error: storageError } = await db.storage
           .from('gallery')
           .remove([imageToDelete.image_public_id])
 
@@ -257,7 +257,7 @@ export async function DELETE(
     }
 
     // Delete record from Supabase
-    const { error: deleteError } = await supabaseAdmin
+    const { error: deleteError } = await db
       .from('gallery')
       .delete()
       .eq('id', id)

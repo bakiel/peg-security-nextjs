@@ -20,7 +20,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
   try {
     // Query team members - RLS policy ensures only Active are returned
-    const { data: teamMembers, error } = await supabaseClient
+    const { data: teamMembers, error } = await db
       .from('team_members')
       .select('id, name, position, bio, photo_url, email, phone, linkedin_url, display_order')
       .eq('status', 'Active')

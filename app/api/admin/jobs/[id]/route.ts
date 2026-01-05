@@ -237,7 +237,7 @@ export async function PATCH(
     updateFields.updated_at = new Date().toISOString()
 
     // Update record in Supabase
-    const { data: updatedRecord, error } = await supabaseAdmin
+    const { data: updatedRecord, error } = await db
       .from('jobs')
       .update(updateFields)
       .eq('id', id)
@@ -315,7 +315,7 @@ export async function DELETE(
     }
 
     // Delete record from Supabase
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('jobs')
       .delete()
       .eq('id', id)

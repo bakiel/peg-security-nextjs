@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category')
 
     // Build query - ONLY return Open jobs for public API
-    let query = supabaseClient
+    let query = db
       .from('jobs')
       .select('*')
       .eq('status', 'Open')

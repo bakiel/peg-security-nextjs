@@ -27,7 +27,7 @@ export async function GET(
       )
     }
 
-    const { data: service, error } = await supabaseAdmin
+    const { data: service, error } = await db
       .from('services')
       .select('*')
       .eq('id', id)
@@ -138,7 +138,7 @@ export async function PUT(
         .replace(/^-+|-+$/g, '')
 
       // Check if slug already exists (excluding current service)
-      const { data: existingService } = await supabaseAdmin
+      const { data: existingService } = await db
         .from('services')
         .select('id')
         .eq('slug', newSlug)
@@ -159,7 +159,7 @@ export async function PUT(
     }
 
     // Update service
-    const { data: updatedService, error } = await supabaseAdmin
+    const { data: updatedService, error } = await db
       .from('services')
       .update(updateData)
       .eq('id', id)
@@ -231,7 +231,7 @@ export async function DELETE(
     }
 
     // Delete service
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('services')
       .delete()
       .eq('id', id)
