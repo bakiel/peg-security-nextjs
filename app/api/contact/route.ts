@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseClient } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import { rateLimit } from '@/lib/rate-limit'
 import {
   validateEmail,
@@ -123,9 +123,10 @@ export async function POST(request: NextRequest) {
         status: 'New'
       }
 
-      const { error } = await supabaseClient
+      const { error } = await db
         .from('contacts')
         .insert([contactRecord])
+        .execute()
 
       if (error) {
         throw error

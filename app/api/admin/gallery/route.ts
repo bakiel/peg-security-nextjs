@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import { validateLength, sanitizeString } from '@/lib/validation'
 import { processImageFromBase64 } from '@/lib/image-processing'
 

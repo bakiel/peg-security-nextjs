@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
 import { z } from 'zod'
 import { fileTypeFromBuffer } from 'file-type'
+import { writeFile, unlink, mkdir } from 'fs/promises'
+import { existsSync } from 'fs'
+import path from 'path'
 
 export const dynamic = 'force-dynamic'
 
 /**
  * POST /api/admin/upload
- * Handle file uploads to Supabase Storage
+ * Handle file uploads to VPS filesystem
  *
  * Supported buckets:
  * - cvs: Job application CVs (private)
@@ -51,6 +53,10 @@ const MAX_FILE_SIZE: Record<string, number> = {
   team: 5 * 1024 * 1024, // 5MB
   services: 5 * 1024 * 1024 // 5MB
 }
+
+// Upload directory configuration
+const UPLOAD_BASE_DIR = process.env.UPLOAD_DIR || '/opt/peg-security/uploads'
+const UPLOAD_BASE_URL = process.env.NEXT_PUBLIC_UPLOAD_URL || 'https://pegsecurity.co.za/uploads'
 
 export async function POST(request: NextRequest) {
   try {
@@ -140,42 +146,41 @@ export async function POST(request: NextRequest) {
     const timestamp = Date.now()
     const fileExt = file.name.split('.').pop()
     const fileName = customPath || `${timestamp}-${Math.random().toString(36).substring(7)}.${fileExt}`
-    const filePath = `${fileName}`
 
-    // Buffer already created above for magic number validation - reuse it
+    // Ensure upload directory exists
+    const uploadDir = path.join(UPLOAD_BASE_DIR, bucket)
+    if (!existsSync(uploadDir)) {
+      await mkdir(uploadDir, { recursive: true })
+    }
 
-    // Upload to Supabase Storage
-    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
-      .from(bucket)
-      .upload(filePath, buffer, {
-        contentType: file.type,
-        upsert: false
-      })
+    // Full file path on filesystem
+    const fullPath = path.join(uploadDir, fileName)
 
-    if (uploadError) {
-      console.error('[ADMIN UPLOAD ERROR]', uploadError)
+    // Write file to disk
+    try {
+      await writeFile(fullPath, buffer)
+    } catch (writeError) {
+      console.error('[ADMIN UPLOAD ERROR]', writeError)
       return NextResponse.json(
         {
           error: 'Failed to upload file',
-          details: uploadError.message
+          details: writeError instanceof Error ? writeError.message : 'Unknown error'
         },
-        { status: 400 }
+        { status: 500 }
       )
     }
 
-    // Get public URL
-    const { data: urlData } = supabaseAdmin.storage
-      .from(bucket)
-      .getPublicUrl(uploadData.path)
+    // Generate public URL
+    const publicUrl = `${UPLOAD_BASE_URL}/${bucket}/${fileName}`
 
-    console.log('[ADMIN UPLOAD] File uploaded:', bucket, uploadData.path)
+    console.log('[ADMIN UPLOAD] File uploaded:', bucket, fileName)
 
     return NextResponse.json(
       {
         success: true,
         data: {
-          url: urlData.publicUrl,
-          path: uploadData.path,
+          url: publicUrl,
+          path: fileName,
           bucket: bucket
         },
         message: 'File uploaded successfully'
@@ -197,7 +202,7 @@ export async function POST(request: NextRequest) {
 
 /**
  * DELETE /api/admin/upload
- * Remove file from Supabase Storage
+ * Remove file from VPS filesystem
  *
  * Security:
  * - Protected by middleware.ts (requires admin authentication)
@@ -237,25 +242,26 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    const { bucket, path } = validation.data
+    const { bucket, path: filePath } = validation.data
 
-    // Delete file from storage
-    const { error } = await supabaseAdmin.storage
-      .from(bucket)
-      .remove([path])
+    // Construct full file path
+    const fullPath = path.join(UPLOAD_BASE_DIR, bucket, filePath)
 
-    if (error) {
-      console.error('[ADMIN UPLOAD DELETE ERROR]', error)
+    // Delete file from filesystem
+    try {
+      await unlink(fullPath)
+    } catch (deleteError) {
+      console.error('[ADMIN UPLOAD DELETE ERROR]', deleteError)
       return NextResponse.json(
         {
           error: 'Failed to delete file',
-          details: error.message
+          details: deleteError instanceof Error ? deleteError.message : 'File not found'
         },
         { status: 400 }
       )
     }
 
-    console.log('[ADMIN UPLOAD] File deleted:', bucket, path)
+    console.log('[ADMIN UPLOAD] File deleted:', bucket, filePath)
 
     return NextResponse.json(
       {

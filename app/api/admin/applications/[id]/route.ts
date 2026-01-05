@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import { sanitizeString } from '@/lib/validation'
 
 // Force dynamic rendering (don't pre-render at build time)

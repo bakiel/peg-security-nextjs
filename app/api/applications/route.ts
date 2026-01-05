@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseClient } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import { rateLimit } from '@/lib/rate-limit'
 import {
   validateEmail,
